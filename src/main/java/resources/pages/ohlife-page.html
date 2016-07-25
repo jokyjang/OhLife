@@ -1,37 +1,69 @@
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 
-<body>
-  <p id="result"></p>
-  <p>Create date:<input type="text" id="createDate" value="20160703"></p>
-  <p>Content:<input type="text" id="content" value="Mouse"></p>
-  <button id="submit">Submit</button>
-  
-  <script language="javascript">
-$(function(){
-              $('#submit').on('click', function() {
-                                 var order = {
-                                 createDate: $('#createDate').val(),
-                                 content: $('#content').val()
-                                 };
-                                 $.ajax({
-                                        type: 'POST',
-                                        url: 'journal',
-                                        data: JSON.stringify(order),
-                                        contentType: 'application/json',
-                                        dataType: 'json',
-                                        success: function(newOrder) {
-                                            alert(JSON.stringify(order));
-                                        },
-                                        error: function() {
-                                            alert('error');
-                                        }
-                                 });
-                });
-              });
+<script>
+	$(function() {
+		$('#submit').click(function() {
+			var order = {
+				createDate : $('#createDate').val(),
+				content : $('#content').val()
+			};
+			$.ajax({
+				type : 'POST',
+				url : 'journal',
+				data : JSON.stringify(order),
+				contentType : 'application/json',
+				dataType : 'json',
+				success : function(data) {
+					alert(JSON.stringify(data));
+				},
+				error : function() {
+					alert('error');
+				}
+			});
+		});
+		
+		$('#list').click(function() {
+			$.ajax({
+				type : 'GET',
+				url : 'journals',
+				dataType : 'json',
+				success : function(data) {
+					listJournals(data);
+				},
+				error : function() {
+					alert('error');
+				}
+			});
+		});
+		
+		function listJournals(data) {
+			var items = data['items'];
+			$('#journals').append('<h1>Journals</h1>');
+			for (var i = 0; i < items.length; ++i) {
+				$('#journals').append('<h2>' + items[i]['create-date']['n'] + '</h2>');
+				$('#journals').append('<p>' + items[i]['content']['s'] + '</p>');
+			}
+		}
+	});
 </script>
+
+<body>
+	<p id="result"></p>
+	<p>
+		Create date:<input type="text" id="createDate" value="20160101">
+	</p>
+	<p>
+		Content:<input type="text" id="content" value="Mouse">
+	</p>
+	<button id="submit">Submit</button>
+	<button id="list">List Journals</button>
+	
+	<div id='journals'>
+	</div>
 
 </body>
 </html>
