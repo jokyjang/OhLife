@@ -1,14 +1,14 @@
 package org.zzx.ohlife.model;
 
 public class PutJournalRequest {
-	private String createDate;
+	private String date;
 	private String content;
 	
-	public String getCreateDate() {
-		return createDate;
+	public String getDate() {
+		return date;
 	}
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
+	public void setDate(String date) {
+		this.date = date;
 	}
 	public String getContent() {
 		return content;

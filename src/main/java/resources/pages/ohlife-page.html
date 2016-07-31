@@ -8,7 +8,7 @@
 	$(function() {
 		$('#submit').click(function() {
 			var order = {
-				createDate : $('#createDate').val(),
+				date : $('#date').val(),
 				content : $('#content').val()
 			};
 			$.ajax({
@@ -42,9 +42,10 @@
 		
 		function listJournals(data) {
 			var items = data['items'];
+			$('#journals').empty();
 			$('#journals').append('<h1>Journals</h1>');
 			for (var i = 0; i < items.length; ++i) {
-				$('#journals').append('<h2>' + items[i]['create-date']['n'] + '</h2>');
+				$('#journals').append('<h2>' + items[i]['date']['s'] + ' ' + items[i]['day-of-week']['s'] + '</h2>');
 				$('#journals').append('<p>' + items[i]['content']['s'] + '</p>');
 			}
 		}
@@ -54,10 +55,10 @@
 <body>
 	<p id="result"></p>
 	<p>
-		Create date:<input type="text" id="createDate" value="20160101">
+		Date:<input type="text" id="date">
 	</p>
 	<p>
-		Content:<input type="text" id="content" value="Mouse">
+		Content:<input type="text" id="content">
 	</p>
 	<button id="submit">Submit</button>
 	<button id="list">List Journals</button>
