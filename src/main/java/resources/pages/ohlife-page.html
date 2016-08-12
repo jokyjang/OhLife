@@ -18,7 +18,7 @@
 				contentType : 'application/json',
 				dataType : 'json',
 				success : function(data) {
-					alert(JSON.stringify(data));
+					alert(JSON.stringify(order));
 				},
 				error : function() {
 					alert('error');
@@ -44,7 +44,7 @@
 			var items = data['items'];
 			$('#journals').empty();
 			$('#journals').append('<h1>Journals</h1>');
-			for (var i = 0; i < items.length; ++i) {
+			for (var i = items.length-1; i >= 0; --i) {
 				$('#journals').append('<h2>' + items[i]['date']['s'] + ' ' + items[i]['day-of-week']['s'] + '</h2>');
 				$('#journals').append('<p>' + items[i]['content']['s'] + '</p>');
 			}
