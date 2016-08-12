@@ -5,48 +5,85 @@
 </head>
 
 <script>
+	var exclusiveStartDate = null;
+
 	$(function() {
 		$('#submit').click(function() {
-			var order = {
+			var req = {
 				date : $('#date').val(),
 				content : $('#content').val()
 			};
 			$.ajax({
 				type : 'POST',
 				url : 'journal',
-				data : JSON.stringify(order),
+				data : JSON.stringify(req),
 				contentType : 'application/json',
 				dataType : 'json',
 				success : function(data) {
-					alert(JSON.stringify(order));
+					alert(JSON.stringify(req));
 				},
-				error : function() {
-					alert('error');
+				error : function(data) {
+					alert(JSON.stringify(data));
 				}
 			});
 		});
-		
+
 		$('#list').click(function() {
+			var req = {
+				exclusiveStartDate : exclusiveStartDate
+			};
 			$.ajax({
-				type : 'GET',
-				url : 'journals',
+				type : 'POST',
+				url : 'listjournals',
+				data : JSON.stringify(req),
+				contentType : 'application/json',
 				dataType : 'json',
 				success : function(data) {
 					listJournals(data);
 				},
-				error : function() {
-					alert('error');
+				error : function(data) {
+					alert(JSON.stringify(req));
+					alert(JSON.stringify(data));
 				}
 			});
 		});
-		
+
+		$('.prevPage').click(function() {
+			alert('previous page');
+		});
+
+		$('.nextPage').click(function() {
+			var req = {
+					exclusiveStartDate : exclusiveStartDate
+				};
+				$.ajax({
+					type : 'POST',
+					url : 'listjournals',
+					data : JSON.stringify(req),
+					contentType : 'application/json',
+					dataType : 'json',
+					success : function(data) {
+						listJournals(data);
+					},
+					error : function(data) {
+						alert(JSON.stringify(req));
+						alert(JSON.stringify(data));
+					}
+				});
+		});
+
 		function listJournals(data) {
+			exclusiveStartDate = data['lastEvaluatedDate'];
+
 			var items = data['items'];
 			$('#journals').empty();
 			$('#journals').append('<h1>Journals</h1>');
-			for (var i = items.length-1; i >= 0; --i) {
-				$('#journals').append('<h2>' + items[i]['date']['s'] + ' ' + items[i]['day-of-week']['s'] + '</h2>');
-				$('#journals').append('<p>' + items[i]['content']['s'] + '</p>');
+			for (var i = items.length - 1; i >= 0; --i) {
+				$('#journals').append(
+						'<h2>' + items[i]['date']['s'] + ' '
+								+ items[i]['day-of-week']['s'] + '</h2>');
+				$('#journals')
+						.append('<p>' + items[i]['content']['s'] + '</p>');
 			}
 		}
 	});
@@ -60,10 +97,21 @@
 	<p>
 		Content:<input type="text" id="content">
 	</p>
-	<button id="submit">Submit</button>
-	<button id="list">List Journals</button>
-	
-	<div id='journals'>
+	<p>
+		<button id="submit">Submit</button>
+		<button id="list">List Journals</button>
+	</p>
+
+	<p>
+		<button class="prevPage">Previous Page</button>
+		<button class="nextPage">Next Page</button>
+	</p>
+	<div id='journals'></div>
+	<div id='bottomButtons'>
+		<p>
+			<button class="prevPage">Previous Page</button>
+			<button class="nextPage">Next Page</button>
+		</p>
 	</div>
 
 </body>

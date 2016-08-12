@@ -20,4 +20,8 @@ public interface Constants {
 	
 	String ATTR_TAG_USERNAME = "username";
 	String ATTR_TAG_NAME = "name";
+	
+	/****************************************************************/
+	
+	Integer SCAN_LIMIT = 7;
 }

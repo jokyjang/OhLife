@@ -9,6 +9,8 @@ public class ListJournalsResult {
 	
 	private List<Map<String, AttributeValue>> items;
 	
+	private String lastEvaluatedDate;
+	
 	public void setItems(List<Map<String, AttributeValue>> items) {
 		this.items = items;
 	}
@@ -19,6 +21,19 @@ public class ListJournalsResult {
 
 	public ListJournalsResult withItems(List<Map<String, AttributeValue>> items) {
 		setItems(items);
+		return this;
+	}
+
+	public String getLastEvaluatedDate() {
+		return lastEvaluatedDate;
+	}
+
+	public void setLastEvaluatedDate(String lastEvaluatedDate) {
+		this.lastEvaluatedDate = lastEvaluatedDate;
+	}
+	
+	public ListJournalsResult withLastEvaluatedKey(String lastEvaluatedKey) {
+		setLastEvaluatedDate(lastEvaluatedKey);
 		return this;
 	}
 
