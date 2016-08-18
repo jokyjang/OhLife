@@ -5,7 +5,8 @@
 </head>
 
 <script>
-	var exclusiveStartDate = null;
+	var exclusiveBackwardStartDate = null;
+	var exclusiveForwardStartDate = null;
 
 	$(function() {
 		$('#submit').click(function() {
@@ -30,7 +31,7 @@
 
 		$('#list').click(function() {
 			var req = {
-				exclusiveStartDate : exclusiveStartDate
+				scanIndexForward : "false"
 			};
 			$.ajax({
 				type : 'POST',
@@ -49,12 +50,30 @@
 		});
 
 		$('.prevPage').click(function() {
-			alert('previous page');
+			var req = {
+					exclusiveStartDate : exclusiveForwardStartDate,
+					scanIndexForward : "true"
+				};
+				$.ajax({
+					type : 'POST',
+					url : 'listjournals',
+					data : JSON.stringify(req),
+					contentType : 'application/json',
+					dataType : 'json',
+					success : function(data) {
+						listJournals(data);
+					},
+					error : function(data) {
+						alert(JSON.stringify(req));
+						alert(JSON.stringify(data));
+					}
+				});
 		});
 
 		$('.nextPage').click(function() {
 			var req = {
-					exclusiveStartDate : exclusiveStartDate
+					exclusiveStartDate : exclusiveBackwardStartDate,
+					scanIndexForward : "false"
 				};
 				$.ajax({
 					type : 'POST',
@@ -73,12 +92,13 @@
 		});
 
 		function listJournals(data) {
-			exclusiveStartDate = data['lastEvaluatedDate'];
-
+			exclusiveBackwardStartDate = data['firstEvaluatedDate']
+			exclusiveForwardStartDate = data['lastEvaluatedDate'];
+			
 			var items = data['items'];
 			$('#journals').empty();
 			$('#journals').append('<h1>Journals</h1>');
-			for (var i = items.length - 1; i >= 0; --i) {
+			for (var i = 0; i < items.length; ++i) {
 				$('#journals').append(
 						'<h2>' + items[i]['date']['s'] + ' '
 								+ items[i]['day-of-week']['s'] + '</h2>');

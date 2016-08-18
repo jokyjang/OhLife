@@ -3,6 +3,7 @@ package org.zzx.ohlife.utils;
 public interface Constants {
 	
 	String DEFAULT_USER_NAME = "jokyjang";
+	String DEFAULT_FUTURE_DATE = "2099-01-01";
 	
 	String TABLE_USER = "ohlife-user";
 	String TABLE_JOURNAL = "ohlife-journal";
