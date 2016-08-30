@@ -1,6 +1,5 @@
 package org.zzx.ohlife.function;
 
-import static org.zzx.ohlife.utils.Constants.ATTR_JOURNAL_CONTENT;
 import static org.zzx.ohlife.utils.Constants.ATTR_JOURNAL_DATE;
 import static org.zzx.ohlife.utils.Constants.ATTR_JOURNAL_DAYOFWEEK;
 import static org.zzx.ohlife.utils.Constants.ATTR_JOURNAL_USERNAME;
@@ -11,8 +10,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.zzx.ohlife.model.PutJournalRequest;
-import org.zzx.ohlife.model.PutJournalResult;
+import org.zzx.ohlife.model.CreateJournalBySNSResult;
 import org.zzx.ohlife.utils.DynamoDB;
 import org.zzx.ohlife.utils.Utils;
 
@@ -21,28 +19,30 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 
-public class PutJournal implements
-		RequestHandler<PutJournalRequest, PutJournalResult> {
+public class CreateJournalBySNS implements RequestHandler<SNSEvent, CreateJournalBySNSResult> {
 
-	public PutJournalResult handleRequest(final PutJournalRequest req,
-			Context context) {
-		AmazonDynamoDB dynamoDB = DynamoDB.getClient();
+	public CreateJournalBySNSResult handleRequest(SNSEvent event, Context context) {
+		AmazonDynamoDB dynamo = DynamoDB.getClient();
+		
+		String date = Utils.parseSeattleDateString(
+				event.getRecords().get(0).getSNS().getTimestamp());
 		String dayOfWeek = "";
 		try {
-			dayOfWeek = Utils.parseDayOfWeek(req.getDate());
+			dayOfWeek = Utils.parseDayOfWeek(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
 		Map<String, AttributeValue> items = new HashMap<String, AttributeValue>();
 		items.put(ATTR_JOURNAL_USERNAME, new AttributeValue().withS(DEFAULT_USER_NAME));
-		items.put(ATTR_JOURNAL_DATE, new AttributeValue().withS(req.getDate()));
-		items.put(ATTR_JOURNAL_CONTENT,
-				new AttributeValue().withS(req.getContent()));
+		items.put(ATTR_JOURNAL_DATE, new AttributeValue().withS(date));
 		items.put(ATTR_JOURNAL_DAYOFWEEK, new AttributeValue().withS(dayOfWeek));
-		dynamoDB.putItem(new PutItemRequest().withTableName(TABLE_JOURNAL)
+		dynamo.putItem(new PutItemRequest()
+				.withTableName(TABLE_JOURNAL)
 				.withItem(items));
-		return new PutJournalResult();
+		return new CreateJournalBySNSResult();
 	}
 
 }
