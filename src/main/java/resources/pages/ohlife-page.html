@@ -82,6 +82,7 @@
 					contentType : 'application/json',
 					dataType : 'json',
 					success : function(data) {
+						alert(JSON.stringify(data));
 						listJournals(data);
 					},
 					error : function(data) {
@@ -92,7 +93,7 @@
 		});
 
 		function listJournals(data) {
-			exclusiveBackwardStartDate = data['firstEvaluatedDate']
+			exclusiveBackwardStartDate = data['firstEvaluatedDate'];
 			exclusiveForwardStartDate = data['lastEvaluatedDate'];
 			
 			var items = data['items'];
@@ -102,8 +103,10 @@
 				$('#journals').append(
 						'<h2>' + items[i]['date']['s'] + ' '
 								+ items[i]['day-of-week']['s'] + '</h2>');
-				$('#journals')
-						.append('<p>' + items[i]['content']['s'] + '</p>');
+
+				if (items[i]['content'] != null) {
+					$('#journals').append('<p>' + items[i]['content']['s'] + '</p>');
+				}
 			}
 		}
 	});
